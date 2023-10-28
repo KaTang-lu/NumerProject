@@ -9,26 +9,36 @@ function gaussjordan(matrix: number[][]): number[] {
   const A = matrix.map((matrix) => matrix.slice(0, n));
 
   //Forward Elimination
-  for(let i=0; i<n; i++){
+  for(let i = 0; i < n; i++){
     for(let j=i+1; j<n; j++){
-        const factor = A[j][i]/A[i][i];
-        for(let k=i; k<n+1; k++){
-            A[j][k] = A[j][k] - factor*A[i][k];
-        }
-        B[j] = B[j] - factor*B[i];
+      let factor = A[j][i] / A[i][i];
+      for(let k = i; k < n+1; k++){
+        A[j][k] = A[j][k] - factor * A[i][k];
+      }
+      B[j] = B[j] - factor * B[i];
     }
   }
 
-  //Backward Substitution
+  //Backward Elimination
   const X = Array(n).fill(0);
-    for(let i=n-1; i>=0; i--){
-        let sum = 0;
-        for(let j=i+1; j<n; j++){
-            sum = sum + A[i][j]*X[j];
-        }
-        X[i] = (B[i]-sum)/A[i][i];
+  for(let i = n-1; i >= 0; i--){
+    for(let j = i-1; j >= 0; j--){
+      let factor = A[j][i] / A[i][i];
+      for(let k = i; k < n; k++){
+        A[j][k] = A[j][k] - factor * A[i][k];
+      }
+      B[j] = B[j] - factor * B[i];
+      
     }
-    result.push(...X);
+  }
+  
+  // normalize to 1
+  for(let i = 0; i < n; i++){
+    const pivot = A[i][i];
+    B[i] = B[i] / pivot;
+    A[i][i] = A[i][i] / pivot;
+  }
+  result.push(...B);
 
   return result;
 }

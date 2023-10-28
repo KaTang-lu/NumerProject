@@ -2,33 +2,56 @@
 import { useEffect, useState } from "react";
 import "../../globals.css"
 
-function gauss(matrix: number[][]): number[] {
+function inversion(matrix: number[][]): number[] {
   const n = matrix.length;
   const result: number[] = [];
   const B = matrix.map((column) => column[n]);
   const A = matrix.map((matrix) => matrix.slice(0, n));
+  const iden: number[][] = [ [1,0,0], [0,1,0], [0,0,1] ];
 
   //Forwatd Elimination
-  for(let i=0; i<n; i++){
-    for(let j=i+1; j<n; j++){
-        const factor = A[j][i]/A[i][i];
-        for(let k=i; k<n+1; k++){
-            A[j][k] = A[j][k] - factor*A[i][k];
-        }
-        B[j] = B[j] - factor*B[i];
+  for(let i = 0; i < n-1; i++){
+    for(let j = i+1; j < n; j++){
+      let factor = A[j][i] / A[i][i];
+      for(let k = i; k < n; k++){
+        A[j][k] = A[j][k] - factor * A[i][k];
+      }
+      for(let k = 0; k < n; k++){
+        iden[j][k] = iden[j][k] - factor * iden[i][k];
+      }
     }
   }
 
-  //Backward Substitution
-  const X = Array(n).fill(0);
-    for(let i=n-1; i>=0; i--){
-        let sum = 0;
-        for(let j=i+1; j<n; j++){
-            sum = sum + A[i][j]*X[j];
-        }
-        X[i] = (B[i]-sum)/A[i][i];
+  //Backward Elimination
+  for(let i = n-1; i >= 0; i--){
+    for(let j = i-1; j >= 0; j--){
+      let factor = A[j][i] / A[i][i];
+      for(let k = i; k < n; k++){
+        A[j][k] = A[j][k] - factor * A[i][k];
+      }
+      for(let k = 0; k < n; k++){
+        iden[j][k] = iden[j][k] - factor * iden[i][k];
+      }
     }
-    result.push(...X);
+  }
+
+  //Divide by diagonal
+  for(let i = 0; i < n; i++){
+    const pivot = A[i][i];
+    A[i][i] = A[i][i] / pivot;
+    for(let j = 0; j < n; j++){
+      iden[i][j] = iden[i][j] / pivot;
+    }
+  }
+
+  //Multiply by B
+  const X: number[] = Array(n).fill(0);
+  for(let i = 0; i < n; i++){
+    for(let j = 0; j < n; j++){
+      X[i] += iden[i][j] * B[j];
+    }
+  }
+  result.push(...X);
 
   return result;
 }
@@ -39,7 +62,7 @@ export default function Page() {
   const [result, setResult] = useState<number[]>([]);
 
   const cal = () => {
-    setResult(gauss(matrix));
+    setResult(inversion(matrix));
   };
   console.log(result);
 

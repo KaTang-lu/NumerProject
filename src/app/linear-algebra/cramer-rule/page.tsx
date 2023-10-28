@@ -27,12 +27,12 @@ function cramer(matrix: number[][]): number[] {
   const detA = determinant(matrix);
   const B = matrix.map((column) => column[n]);
 
-  for(let i=0; i<n; i++){
+  for(let i = 0; i < n; i++){
     const Ax = matrix.map((matrix) => [...matrix]);
-    for(let j=0; j<n; j++){
+    for(let j = 0; j < n; j++){
       Ax[j][i] = B[j];
     }
-    result.push(determinant(Ax)/detA);
+    result.push(determinant(Ax) / detA);
   }
 
   return result;

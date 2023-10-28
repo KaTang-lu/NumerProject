@@ -8,8 +8,8 @@ import "../../globals.css"
 function bisection(fx: string, xl: number, xr: number) : {result:number[], error:number[]} {
   let xm: number = 0;
   let xold: number = xm;
-  let error = [];
-  let result = [];
+  let error: number [] = [];
+  let result: number [] = [];
   Number(fx);
 
   for (let i = 0; i < 100; i++) {
@@ -44,7 +44,7 @@ export default function Page() {
   const [result, setResult] = useState<number[]>([]);
 
   const cal = () => {
-    // console.log(fx, xl, xr)
+    console.log(fx, xl, xr)
     const value = bisection(fx, Number(xl), Number(xr));
     setResult(value.result);
     setError(value.error);
@@ -86,7 +86,7 @@ export default function Page() {
       {result ? (
         <>
           <p className="text-xl font-bold mb-4">Result: {result.at(-1)} </p>
-
+          
           <div className="mx-auto">
             <table className="table-auto">
                 <thead>

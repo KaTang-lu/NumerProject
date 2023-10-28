@@ -5,10 +5,10 @@ import "../../globals.css";
 function LU(matrix: number[][]): number[] {
   const n = matrix.length;
   const result: number[] = [];
-  const B = matrix.map((column) => column[n]);
   const A = matrix.map((matrix) => matrix.slice(0, n));
-  const L = Array.from({ length: n }, () => Array.from({ length: n }, () => 0));
-  const U = Array.from({ length: n }, () => Array.from({ length: n }, () => 0));
+  const B = matrix.map((column) => column[n]);
+  const L: number[][] = new Array(n).fill(0).map(() => new Array(n).fill(0));
+  const U: number[][] = new Array(n).fill(0).map(() => new Array(n).fill(0));
 
   for (let i = 0; i < n; i++) {
     //Lower Triangular
@@ -33,29 +33,29 @@ function LU(matrix: number[][]): number[] {
       }
     }
   }
-  console.log(L);
-  console.log(U);
-  
+  console.log("[L]: \n", L);
+  console.log("[U]: \n", U);
 
-  //Forwatd Elimination
-  for (let i = 0; i < n; i++) {
-    for (let j = i + 1; j < n; j++) {
-      const factor = A[j][i] / A[i][i];
-      for (let k = i; k < n + 1; k++) {
-        A[j][k] = A[j][k] - factor * A[i][k];
-      }
-      B[j] = B[j] - factor * B[i];
+  //Forward Substitution
+  const Y: number[] = new Array(n).fill(0);
+  Y[0] = A[0][0] / L[0][0];
+  for(let i = 0; i < n; i++){
+    let f_sum = 0;
+    for(let j = 0; j < i; j++){
+      f_sum += L[i][j] * Y[j];
     }
+    Y[i] = (B[i] - f_sum) / L[i][i];
   }
 
   //Backward Substitution
-  const X = Array(n).fill(0);
-  for (let i = n - 1; i >= 0; i--) {
-    let sum = 0;
-    for (let j = i + 1; j < n; j++) {
-      sum = sum + A[i][j] * X[j];
+  const X: number[] = new Array(n).fill(0);
+  X[n-1] = Y[n-1] / U[n-1][n-1];
+  for(let i = n-1; i >= 0; i--){
+    let b_sum = 0;
+    for(let j = i+1; j < n; j++){
+      b_sum += U[i][j] * X[j];
     }
-    X[i] = (B[i] - sum) / A[i][i];
+    X[i] = (Y[i] - b_sum) / U[i][i];
   }
   result.push(...X);
 

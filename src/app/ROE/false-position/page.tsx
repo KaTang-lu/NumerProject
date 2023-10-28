@@ -7,8 +7,8 @@ import "../../globals.css"
 function falseP(fx: string, xl: number, xr: number) : {result:number[], error:number[]} {
   let x1: number = 0;
   let xold: number = x1;
-  let error = [];
-  let result = [];
+  let error: number[] = [];
+  let result: number[] = [];
   Number(fx);   
 
   for (let i = 0; i < 100; i++) {

@@ -9,26 +9,26 @@ function gauss(matrix: number[][]): number[] {
   const A = matrix.map((matrix) => matrix.slice(0, n));
 
   //Forwatd Elimination
-  for(let i=0; i<n; i++){
-    for(let j=i+1; j<n; j++){
-        const factor = A[j][i]/A[i][i];
-        for(let k=i; k<n+1; k++){
-            A[j][k] = A[j][k] - factor*A[i][k];
-        }
-        B[j] = B[j] - factor*B[i];
+  for(let i = 0; i < n; i++){
+    for(let j = i+1; j < n; j++){
+      const factor = A[j][i] / A[i][i];
+      for(let k = i; k < n+1; k++){
+        A[j][k] = A[j][k] - factor * A[i][k];
+      }
+      B[j] = B[j] - factor * B[i];
     }
   }
 
   //Backward Substitution
   const X = Array(n).fill(0);
-    for(let i=n-1; i>=0; i--){
-        let sum = 0;
-        for(let j=i+1; j<n; j++){
-            sum = sum + A[i][j]*X[j];
-        }
-        X[i] = (B[i]-sum)/A[i][i];
+  for(let i = n-1; i >= 0; i--){
+    let sum = 0;
+    for(let j = i+1; j < n; j++){
+      sum = sum + A[i][j] * X[j];
     }
-    result.push(...X);
+    X[i] = (B[i]-sum) / A[i][i];
+  }
+  result.push(...X);
 
   return result;
 }
