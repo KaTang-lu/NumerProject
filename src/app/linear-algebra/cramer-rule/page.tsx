@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import "../../globals.css"
+import { Card } from "@mui/material";
+import Navbar from "../../../components/Navbar";
 
 function determinant(matrix: number[][]): number {
   const n = matrix.length;
@@ -53,6 +55,9 @@ export default function Page() {
   }, [dimension]);
 
   return (
+    <>
+    <Navbar />
+    <Card className="w-10/12 max-w-full mx-auto p-4 mt-6 shadow-lg rounded-lg">
     <div className="p-4">
       <div>
         <h1 className="text-2xl font-bold mb-4">Cramer Rule</h1>
@@ -60,7 +65,10 @@ export default function Page() {
           type="number"
           value={dimension}
           onChange={(e) => {
-            setDimension(Number(e.target.value));
+            const newDimension = Number(e.target.value);
+            if (newDimension <= 5) {
+              setDimension(newDimension);
+            }
           }}
           className="p-2 rounded border border-gray-300 mr-2"
           
@@ -78,12 +86,12 @@ export default function Page() {
                   temp[i][j] = Number(e.target.value);
                   setMatrix(temp);
                 }}
-                className="p-2 rounded border border-gray-300 mr-2"
+                className="p-1 rounded border border-gray-300 mr-2"
               />
             ))}
           </div>
         ))}
-        <button onClick={cal} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Calculate</button>
+        <button onClick={cal} className="btn btn-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Calculate</button>
       </div>
 
       <div>
@@ -105,5 +113,7 @@ export default function Page() {
         ) : null}
       </div>
     </div>
+    </Card>
+    </>
   );
 }

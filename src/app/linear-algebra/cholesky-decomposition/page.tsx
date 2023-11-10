@@ -1,57 +1,51 @@
 "use client";
 import { useEffect, useState } from "react";
-import "../../globals.css"
+import "../../globals.css";
+import { Card } from "@mui/material";
+import Navbar from "../../../components/Navbar";
 
-function inversion(matrix: number[][]): number[] {
+function cholesky(matrix: number[][]): number[] {
   const n = matrix.length;
   const result: number[] = [];
-  const B = matrix.map((column) => column[n]);
   const A = matrix.map((matrix) => matrix.slice(0, n));
-  const iden: number[][] = [ [1,0,0], [0,1,0], [0,0,1] ];
+  const B = matrix.map((column) => column[n]);
+  const L: number[][] = new Array(n).fill(0).map(() => new Array(n).fill(0));
 
-  //Forwatd Elimination
-  for(let i = 0; i < n-1; i++){
-    for(let j = i+1; j < n; j++){
-      let factor = A[j][i] / A[i][i];
-      for(let k = i; k < n; k++){
-        A[j][k] = A[j][k] - factor * A[i][k];
+  for (let i = 0; i < n; i++) {
+    let _sum = 0;
+    for (let j = 0; j < i; j++) {
+      _sum += L[i][j] * L[i][j];
+    }
+    L[i][i] = Math.sqrt(A[i][i] - _sum);
+
+    for (let j = i + 1; j < n; j++) {
+      let _sum = 0;
+      for (let k = 0; k < i; k++) {
+        _sum += L[j][k] * L[i][k];
       }
-      for(let k = 0; k < n; k++){
-        iden[j][k] = iden[j][k] - factor * iden[i][k];
-      }
+      L[j][i] = (A[j][i] - _sum) / L[i][i];
     }
   }
+  console.log("[L]: \n", L);
 
-  //Backward Elimination
-  for(let i = n-1; i >= 0; i--){
-    for(let j = i-1; j >= 0; j--){
-      let factor = A[j][i] / A[i][i];
-      for(let k = i; k < n; k++){
-        A[j][k] = A[j][k] - factor * A[i][k];
-      }
-      for(let k = 0; k < n; k++){
-        iden[j][k] = iden[j][k] - factor * iden[i][k];
-      }
+  const y: number[] = new Array(n).fill(0);
+  for (let i = 0; i < n; i++) {
+    let _sum = 0;
+    for (let j = 0; j < i; j++) {
+      _sum += L[i][j] * y[j];
     }
+    y[i] = (B[i] - _sum) / L[i][i];
   }
 
-  //Divide by diagonal
-  for(let i = 0; i < n; i++){
-    const pivot = A[i][i];
-    A[i][i] = A[i][i] / pivot;
-    for(let j = 0; j < n; j++){
-      iden[i][j] = iden[i][j] / pivot;
+  const x: number[] = new Array(n).fill(0);
+  for (let i = n - 1; i >= 0; i--) {
+    let _sum = 0;
+    for (let j = i + 1; j < n; j++) {
+      _sum += L[j][i] * x[j];
     }
+    x[i] = (y[i] - _sum) / L[i][i];
   }
-
-  //Multiply by B
-  const X: number[] = Array(n).fill(0);
-  for(let i = 0; i < n; i++){
-    for(let j = 0; j < n; j++){
-      X[i] += iden[i][j] * B[j];
-    }
-  }
-  result.push(...X);
+  result.push(...x);
 
   return result;
 }
@@ -62,7 +56,7 @@ export default function Page() {
   const [result, setResult] = useState<number[]>([]);
 
   const cal = () => {
-    setResult(inversion(matrix));
+    setResult(cholesky(matrix));
   };
   console.log(result);
 
@@ -71,20 +65,25 @@ export default function Page() {
   }, [dimension]);
 
   return (
+    <>
+    <Navbar />
+    <Card className="w-10/12 max-w-full mx-auto p-4 mt-6 shadow-lg rounded-lg">
     <div className="p-4">
       <div>
-        <h1 className="text-2xl font-bold mb-4">Matrix Inversion</h1>
+        <h1 className="text-2xl font-bold mb-4">Cholesky Decomposition</h1>
         <input
           type="number"
           value={dimension}
           onChange={(e) => {
-            setDimension(Number(e.target.value));
+            const newDimension = Number(e.target.value);
+            if (newDimension <= 5) {
+              setDimension(newDimension);
+            }
           }}
           className="p-2 rounded border border-gray-300 mr-2"
-          
         />
-        
-        <h2 className="text-2xl mb-4">Matrix</h2>
+
+        <h2 className="text-2xl mb-4 font-bold">Matrix</h2>
         {Array.from({ length: dimension }, (_, i) => (
           <div key={i} className="mb-4">
             {Array.from({ length: dimension + 1 }, (_, j) => (
@@ -96,12 +95,17 @@ export default function Page() {
                   temp[i][j] = Number(e.target.value);
                   setMatrix(temp);
                 }}
-                className="p-2 rounded border border-gray-300 mr-2"
+                className="p-1 rounded border border-gray-300 mr-2"
               />
             ))}
           </div>
         ))}
-        <button onClick={cal} className="btn btn-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Calculate</button>
+        <button
+          onClick={cal}
+          className="btn btn-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Calculate
+        </button>
       </div>
 
       <div>
@@ -123,5 +127,7 @@ export default function Page() {
         ) : null}
       </div>
     </div>
+    </Card>
+    </>
   );
 }

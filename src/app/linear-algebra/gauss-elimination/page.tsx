@@ -78,7 +78,7 @@ export default function Page() {
             ))}
           </div>
         ))}
-        <button onClick={cal} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Calculate</button>
+        <button onClick={cal} className="btn btn-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Calculate</button>
       </div>
 
       <div>

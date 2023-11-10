@@ -3,6 +3,8 @@
 import { evaluate, derivative } from "mathjs";
 import { useState } from "react";
 import "../../globals.css"
+import Navbar from "../../../components/Navbar";
+import { Card, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
 
 function Newton(fx: string, start: number) : {result:number[], error:number[]} {
   let xnext: number = 0;
@@ -42,54 +44,62 @@ export default function Page() {
   };
 
   return (
+    <>
+    <Navbar />
+    <Card className="w-11/12 max-w-xl mx-auto p-4 mt-6 mb-4 shadow-lg rounded-lg">
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4 text-center">Newton Raphson</h1>
-      <div className="flex items-center mb-4">
-      <input
+      <div className="flex flex-wrap">
+      <TextField id="outlined-basic" label='f(x)' variant="outlined"
         type="text"
-        placeholder="f(x)"
+        required
         value={fx}
         onChange={(e) => setFx(e.target.value)}
-        className="w-1/3 p-2 border border-gray-300 rounded mr-2"
+        className="w-full"
       />
 
-      <input
+      <TextField id="outlined-basic" label='x0 (start)' variant="outlined"
         type="number"
-        placeholder="x0 (start)"
+        required
         value={start}
         onChange={(e) => setStart(e.target.value)}
-        className="w-1/3 p-2 border border-gray-300 rounded mr-2"
+        className="w-36 mr-2 mt-4"
       />
 
-      <button onClick={cal} className="bg-blue-500 text-white p-2 rounded">Calculate</button>
+      <button onClick={cal} className="btn btn-4 w-36 mt-4 bg-blue-500 text-white p-2 rounded">Calculate</button>
       </div>
 
-      {result ? (
+      {result.length > 1 ? (
         <>
-          <p className="text-xl font-bold mb-4">Result: {result.at(-1)} </p>
+          <p className="text-xl font-bold mb-4 mt-4">Result: {(result.at(-1)?.toFixed(6))} </p>
 
-          <div className="mx-auto">
-            <table className="table-auto">
-                <thead>
-                    <tr>
-                        <th className="px-4 py-2">Iteration</th>
-                        <th className="px-4 py-2">X Next</th>
-                        <th className="px-4 py-2">Error</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {result.map((item, index) => (
-                        <tr key={index}>
-                            <td className="border px-4 py-2">{index+1}</td>
-                            <td className="border px-4 py-2">{item}</td>
-                            <td className="border px-4 py-2">{error[index]}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+          <div className="flex justify-center">
+            <TableContainer component={Paper} className="mt-4">
+              <Table aria-label="simple table" className="min-w-full">
+                <TableHead>
+                <TableRow>
+                  <TableCell className="font-bold" align="center">Iteration</TableCell>
+                  <TableCell className="font-bold" align="center">X Next</TableCell>
+                  <TableCell className="font-bold" align="center">Error</TableCell>
+                </TableRow>
+                </TableHead>
+                <TableBody>
+                  {result.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell align="center">{index+1}</TableCell>
+                      <TableCell align="center">{item.toFixed(6)}</TableCell>
+                      <TableCell align="center">{error[index].toFixed(6)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </div>
         </>
       ) : null}
+      
     </div>
+    </Card>
+    </>
   );
 }
