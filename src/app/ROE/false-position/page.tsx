@@ -48,31 +48,31 @@ export default function Page() {
   const [xr, setxr] = useState("");
   const [error, setError] = useState<number[]>([]);
   const [result, setResult] = useState<number[]>([]);
-  // const [graph, setGraph] = useState<{x:number, y : number}[]>([]);
+  const [graph, setGraph] = useState<{x:number, y : number}[]>([]);
 
   const cal = () => {
     console.log(fx, xl, xr)
     const value = falseP(fx, Number(xl), Number(xr));
     setResult(value.result);
     setError(value.error);
-    // createGraph();
+    createGraph();
   };
 
-  // const createGraph = () => {
-  //   setGraph(() => {
-  //     const x : number[] = [];
-  //     const y : number[] = [];
+  const createGraph = () => {
+    setGraph(() => {
+      const x : number[] = [];
+      const y : number[] = [];
     
-  //     const step = Math.pow(10,Math.floor(Math.abs(Math.log(Number(xr) - Number(xl))) / Math.log(10)) - 1);
+      const step = Math.pow(10,Math.floor(Math.abs(Math.log(Number(xr) - Number(xl))) / Math.log(10)) - 1);
       
-  //     for ( let i = Number(xl); i < Number(xr); i += step) {
-  //       x.push(i);
-  //       y.push(evaluate(fx, {x: i}));
-  //     }
+      for ( let i = Number(xl); i < Number(xr); i += step) {
+        x.push(i);
+        y.push(evaluate(fx, {x: i}));
+      }
 
-  //     return Array.from({length : x.length}, (_, i) => {return {x : x[i], y : y[i]}});
-  //   });
-  // }
+      return Array.from({length : x.length}, (_, i) => {return {x : x[i], y : y[i]}});
+    });
+  }
 
   return (
     <>
@@ -139,7 +139,7 @@ export default function Page() {
         </>
       ) : null}
     </div>
-    {/* <Plot
+    <Plot
         data={[
           {
             x: graph.map((item) => item.x),
@@ -150,7 +150,7 @@ export default function Page() {
           },
         ]}
         layout={ {width: 500, height: 450, title: 'Graph'} }
-      /> */}
+      />
     </Card>
     </>
   );

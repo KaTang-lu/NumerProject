@@ -71,7 +71,6 @@ export default function Page() {
             }
           }}
           className="p-2 rounded border border-gray-300 mr-2"
-          
         />
         
         <h2 className="text-2xl mb-4">Matrix</h2>

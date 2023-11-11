@@ -71,6 +71,14 @@ export default function Home() {
       </div>
       </Card>
       </div>
+
+      <Card className="w-11/12 max-w-sm mx-auto p-4 mt-7 mb-4 shadow-lg rounded-lg" style={cardStyle}>
+        <h1 className="text-center font-bold" style={{ color: '#123456', fontSize: '1.5rem', fontWeight: 'bold' }}>Intergration</h1>
+        <div className='text-left mt-6'>
+          <a href="/intergration/trapezoidal" style={linkStyle}>Trapezoidal</a>
+        </div>
+
+      </Card>
               
     </div>
   )

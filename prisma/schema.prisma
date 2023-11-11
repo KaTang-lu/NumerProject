@@ -1,0 +1,18 @@
+datasource db {
+    provider  = "mysql"
+    url       = "mysql://root:@localhost:3306/nm"
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Integration {
+    id       Int      @id @default(autoincrement())
+    equation String
+    from     Float
+    to       Float
+    created  DateTime @default(now())
+
+    @@map("integration")
+}
